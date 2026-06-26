@@ -3,7 +3,7 @@ name: Deploy React App to GitHub Pages
 on:
   push:
     branches:
-      - main   # unga branch name (check pannunga)
+      - main
 
 permissions:
   contents: write
@@ -27,7 +27,12 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Configure Git          # ← இது missing ஆ இருந்துச்சு!
+        run: |
+          git config --global user.email "kalaiblazer14@gmail.com"
+          git config --global user.name "Kalai-08"
+
       - name: Deploy to GitHub Pages
         run: |
           npm install -g gh-pages
-          gh-pages -d dist
+          gh-pages -d dist -r https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
