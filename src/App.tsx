@@ -17,15 +17,21 @@ const AppToaster = await OverlayToaster.create({
   position: "top"
 })
 
+type User ={
+  id : number,
+  name : string,
+  email : string
+}
+
 function App() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [newName, setNewName] = useState('');
   const [newEmail, setNewEmail] = useState('');
 
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(data => setUsers(data))
+      .then((data: User[]) => setUsers(data))
       .catch(error => console.error('Error fetching user data:', error));
   }, []);
 
@@ -46,7 +52,7 @@ function App() {
           }
         }
       ).then((response) => response.json())
-      .then(data => setUsers([...users, data]))
+      .then((data: User) => setUsers([...users, data]))
       .catch(error => console.error('Error Posting User Detais:', error));
 
       AppToaster.show({
@@ -92,7 +98,7 @@ function App() {
           <tbody>
             {users.map(user =>(
               <tr key={user.id}>
-                <td><EditableText value={user.id}/></td>
+                <td><EditableText value={String(user.id)}/></td>
                 <td><EditableText value={user.name}/></td>
                 <td><EditableText value={user.email}/></td>
                 <td>
