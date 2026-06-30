@@ -60,8 +60,43 @@ function App() {
         intent : "success",
         timeout : 3000
       })
+
+      setNewName("");
+      setNewEmail("");
     }
   }
+
+  function onchangeHandler(id: number, key: keyof User, value: string) {
+    return users.map(user =>
+      user.id === id ? { ...user, [key]: value } : user
+    );
+  }
+
+  function UpdateUser(id: number){
+    const user = users.find((u) => u.id === id) ?? null;
+
+    if (user) {
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`,
+        {
+          method : 'PUT',
+          body :JSON.stringify({user}),
+          headers : {
+            'Content-type' : 'application/json; charset=UTF-8'
+          }
+        }
+      ).then((response) => response.json())
+      .then((data) => console.log("Updated:",data))
+      .catch(error =>{
+         console.error('Error Updating User Detais:', error)
+          AppToaster.show({
+            message : "User updated Succesfully..!",
+            intent : "success",
+            timeout : 3000
+          })
+      })
+    }
+  }
+
   return (
     <div className="bp5-light">
       <>
@@ -99,10 +134,10 @@ function App() {
             {users.map(user =>(
               <tr key={user.id}>
                 <td><EditableText value={String(user.id)}/></td>
-                <td><EditableText value={user.name}/></td>
-                <td><EditableText value={user.email}/></td>
+                <td><EditableText onChange={(value) => onchangeHandler(user.id, "name", value)} value={user.name}/></td>
+                <td><EditableText onChange={(value) => onchangeHandler(user.id, "email", value)} value={user.email}/></td>
                 <td>
-                  <Button intent='primary' text='Update' />
+                  <Button onClick = {() => UpdateUser(user.id)} intent='primary' text='Update' />
                   <Button intent='danger' text='Delete' />
                 </td>
               </tr>
